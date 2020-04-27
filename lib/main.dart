@@ -2,80 +2,77 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyFirstApp());
+void main() => runApp(MyApp());
 
-class MyFirstApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   @override
-  State<StatefulWidget> createState() {
-    return _MyFirstAppState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      // theme: ThemeData(fontFamily: 'IndieFlower'),
+      home: Scaffold(
+        backgroundColor: Colors.indigo,
+        appBar: AppBar(
+          backgroundColor: Colors.blue,
+          title: Text('Counter'),
+          centerTitle: true,
+        ),
+        body: Center(
+          child: Container(padding: EdgeInsets.all(16), child: CounterWidget()),
+        ),
+      ),
+    );
   }
 }
 
-class _MyFirstAppState extends State<MyFirstApp> {
-  bool _loading;
-  double _progressValue;
+class CounterWidget extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _CounterWidgetState();
+  }
+}
+
+class _CounterWidgetState extends State<CounterWidget> {
+  int _count;
 
   @override
   void initState() {
-    _loading = false;
-    _progressValue = 0.0;
+    _count = 50;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        backgroundColor: Colors.indigo,
-        appBar: AppBar(title: Text("MyFirstApp"), centerTitle: true),
-        body: Center(
-          child: Container(
-            padding: EdgeInsets.all(16),
-            child: _loading
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                        LinearProgressIndicator(value: _progressValue),
-                        Text(
-                          '${(_progressValue * 100).round()}%',
-                          style: TextStyle(color: Colors.white, fontSize: 20),
-                        ),
-                      ])
-                : Text(
-                    "Press button to download",
-                    style: TextStyle(color: Colors.white, fontSize: 20),
-                  ),
-          ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text('Tap "-" to decrement', style: TextStyle(color: Colors.white)),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            IconButton(
+                icon: Icon(Icons.remove), color: Colors.white, onPressed: minus),
+            Text('${_count}'),
+            IconButton(
+                icon: Icon(Icons.add), color: Colors.white, onPressed: add ),
+          ],
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: (){
-            setState(() {
-              _loading = !_loading;
-              _updateProgress();
-            });
-            
-          },
-          child: Icon(Icons.cloud_download),
-        ),
-      ),
+        Text('Tap "+" to increment', style: TextStyle(color: Colors.white)),
+      ],
     );
   }
 
-  void _updateProgress(){
-    const oneSec = const Duration(seconds: 1);
-    Timer.periodic(oneSec, (Timer t){
-      setState(() {
-        _progressValue += 0.2;
-
-        if(_progressValue.toStringAsFixed(1) == '1.0'){
-          _loading = false;
-          t.cancel();
-          _progressValue = 0.0;
-          return;
-        }
-
-      });
+  void add() {
+    setState(() {
+      _count++;
     });
   }
-  
+
+  void minus() {
+    setState(() {
+      _count--;
+    });
+  }
+
+
 }
